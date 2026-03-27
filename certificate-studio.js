@@ -4,7 +4,7 @@ const path = require('path');
 const { generatePublicId } = require('./public-id');
 
 const app = express();
-const PORT = 8787;
+const PORT = process.env.PORT || 8787;
 
 const ROOT_DIR = path.resolve(process.env.HOME || process.env.USERPROFILE, 'glamoph-verify');
 const RECORDS_DIR = path.join(ROOT_DIR, 'records');

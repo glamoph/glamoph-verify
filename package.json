@@ -1,10 +1,10 @@
 {
   "name": "glamoph-verify",
   "version": "1.0.0",
-  "description": "",
-  "main": "build-records.js",
+  "description": "GLAMOPH Certificate CMS & Archive System",
+  "main": "certificate-studio.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node certificate-studio.js"
   },
   "keywords": [],
   "author": "",
