@@ -18,10 +18,6 @@ const ARTWORKS_JSON = path.join(ROOT_DIR, 'artworks.json');
 const PENDING_ORDERS_JSON = path.join(ROOT_DIR, 'pending-orders.json');
 const RECORDS_SOURCE_JSON = path.join(ROOT_DIR, 'records-source.json');
 
-const ARTWORKS_JSON = path.join(ROOT_DIR, 'artworks.json');
-const PENDING_ORDERS_JSON = path.join(ROOT_DIR, 'pending-orders.json');
-const RECORDS_SOURCE_JSON = path.join(ROOT_DIR, 'records-source.json');
-
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(ROOT_DIR));
@@ -133,10 +129,10 @@ function getAllRecords() {
 
 function getNextEditionNumber(artworkCode, size) {
   const records = getAllRecords();
+
   const sameSeries = records.filter((record) => {
     return (
       normalizeArtworkCode(record.artworkCode) === artworkCode &&
-      String(record.size || '').toUpperCase().includes(`(${size})`) === false &&
       String(record.publicSlug || '').includes(`-${artworkCode}-${size}-`)
     ) || (
       normalizeArtworkCode(record.artworkCode) === artworkCode &&
@@ -575,7 +571,7 @@ app.post('/admin/generate', (req, res) => {
     persistRecord(record);
     removePendingOrderById(requestedOrderId);
 
-    return res.redirect(`/admin`);
+    return res.redirect('/admin');
   } catch (error) {
     console.error(error);
     return res.status(500).send(`Generate failed: ${error.message}`);
@@ -644,4 +640,25 @@ app.get('/:slug', (req, res, next) => {
   }
 
   return res.sendFile(VERIFY_HTML_PATH);
+});
+
+app.use((req, res) => {
+  res.status(404).send('Not Found');
+});
+
+app.listen(PORT, () => {
+  ensureDir(RECORDS_DIR);
+  ensureDir(IMAGES_DIR);
+  ensureDir(ASSETS_DIR);
+
+  if (!fs.existsSync(PENDING_ORDERS_JSON)) {
+    writeJsonPretty(PENDING_ORDERS_JSON, []);
+  }
+
+  if (!fs.existsSync(RECORDS_SOURCE_JSON)) {
+    writeJsonPretty(RECORDS_SOURCE_JSON, []);
+  }
+
+  console.log(`GLAMOPH verify server running at http://localhost:${PORT}`);
+  console.log(`Admin: http://localhost:${PORT}/admin`);
 });
