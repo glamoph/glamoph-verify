@@ -6,7 +6,7 @@ const { generatePublicId } = require('./public-id');
 const app = express();
 const PORT = process.env.PORT || 8787;
 
-const ROOT_DIR = path.resolve(process.env.HOME || process.env.USERPROFILE, 'glamoph-verify');
+const ROOT_DIR = process.cwd();
 const RECORDS_DIR = path.join(ROOT_DIR, 'records');
 const IMAGES_DIR = path.join(ROOT_DIR, 'images');
 const ASSETS_DIR = path.join(ROOT_DIR, 'assets');
@@ -629,10 +629,14 @@ app.get('/:slug', (req, res, next) => {
     return next();
   }
 
-  const recordPath = path.join(process.cwd(), 'records', slug, 'data.json');
+  const recordPath = path.join(RECORDS_DIR, slug, 'data.json');
 
   if (!fs.existsSync(recordPath)) {
     return res.status(404).send('Record Not Found');
+  }
+
+  if (!fs.existsSync(VERIFY_HTML_PATH)) {
+    return res.status(500).send('index.html not found');
   }
 
   return res.sendFile(VERIFY_HTML_PATH);
