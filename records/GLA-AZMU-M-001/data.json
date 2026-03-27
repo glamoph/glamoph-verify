@@ -1,0 +1,17 @@
+{
+  "verified": "Artwork Verified",
+  "title": "Azure Muse",
+  "artworkId": "GLA-AZMU-M-001",
+  "edition": "Edition 01 / 30",
+  "artist": "GLAMOPH",
+  "medium": "Archival pigment print on fine art paper",
+  "size": "M",
+  "frame": "Black",
+  "archiveDate": "March 26, 2026",
+  "archiveUrl": "verify.glamoph.com/GLA-AZMU-M-001",
+  "image": "AZMU.jpg",
+  "signature": "signature.png",
+  "artworkCode": "AZMU",
+  "publicId": "GLA-AZMU-M-001-U2XB",
+  "publicSlug": "GLA-AZMU-M-001"
+}

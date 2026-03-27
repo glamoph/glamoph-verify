@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GLAMOPH Certificate Studio</title>
+</head>
+<body>
+<h1>GLAMOPH Certificate Studio</h1>
+
+<div id="app"></div>
+
+<script>
+async function load() {
+  const res = await fetch('/api/bootstrap');
+  const data = await res.json();
+
+  const app = document.getElementById('app');
+
+  if (!data.pending || data.pending.length === 0) {
+    app.innerHTML = "<p>No pending items</p>";
+    return;
+  }
+
+  const item = data.pending[0];
+
+  const btn = `<button onclick="issue('${item.id}')">Issue</button>`;
+
+  app.innerHTML =
+    "<h2>" + item.artworkTitle + "</h2>" +
+    "<p>Order: " + item.orderNo + "</p>" +
+    "<p>Size: " + item.size + "</p>" +
+    "<p>Edition: " + item.edition + "</p>" +
+    btn;
+}
+
+async function issue(id) {
+  const res = await fetch(`/api/issue/${id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ operator: 'Studio' })
+  });
+
+  const data = await res.json();
+
+  if (!data.ok) {
+    alert(data.error || 'Issue failed');
+    return;
+  }
+
+  alert(`Issued: ${data.archiveId}`);
+  load();
+}
+
+load();
+</script>
+
+</body>
+</html>

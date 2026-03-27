@@ -1,0 +1,36 @@
+[
+  {
+    "publicSlug": "GLA-AMFW-M-001",
+    "publicId": "GLA-AMFW-M-001-GL7J",
+    "artworkId": "GLA-AMFW-M-001",
+    "artworkCode": "AMFW",
+    "title": "A Mind Full of Water",
+    "size": "20 × 25 in (M)",
+    "sizeCode": "M",
+    "edition": "Edition 01 / 30",
+    "editionNumber": 1,
+    "editionTotal": 30,
+    "archiveDate": "March 26, 2026",
+    "archiveUrl": "verify.glamoph.com/GLA-AMFW-M-001",
+    "image": "AMFW.jpg",
+    "orderId": "1001",
+    "lineItemId": "1001-1",
+    "customerEmail": "collector@example.com"
+  },
+  {
+    "archiveId": "GLA-AZMU-M-004",
+    "artworkCode": "AZMU",
+    "size": "M",
+    "editionNumber": 1,
+    "editionTotal": 30,
+    "orderId": "1042",
+    "orderName": "#1042",
+    "lineItemId": "1042-1",
+    "customerName": "A. Rivera",
+    "customerEmail": "collector@example.com",
+    "verifyUrl": "https://verify.glamoph.com/GLA-AZMU-M-004",
+    "operator": "Studio",
+    "issuedAt": "2026-03-26T07:12:04.928Z",
+    "source": "certificate-studio"
+  }
+]

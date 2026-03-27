@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">GLAMOPH — Verify</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="archive.css?v=4" />
+
+</head>
+
+<body>
+  <main class="archive-page">
+    <section class="archive-sheet" aria-label="GLAMOPH archive record">
+      <div class="archive-shell">
+
+        <!-- HEADER -->
+        <header class="archive-header">
+          <p class="archive-status" id="verified">Loading…</p>
+        </header>
+
+        <!-- HERO -->
+        <section class="archive-hero">
+          <div class="archive-hero__content">
+            <h1 class="archive-title" id="title">—</h1>
+
+            <div class="archive-meta-line">
+              <p class="archive-meta-item">
+                <span class="archive-meta-label">Artwork ID</span>
+                <span class="archive-meta-value" id="artworkId">—</span>
+              </p>
+
+              <p class="archive-meta-divider">/</p>
+
+              <p class="archive-meta-item">
+                <span class="archive-meta-label">Edition</span>
+                <span class="archive-meta-value" id="edition">—</span>
+              </p>
+            </div>
+          </div>
+
+          <figure class="archive-artwork">
+            <img id="image" alt="" />
+          </figure>
+        </section>
+
+        <!-- RECORD -->
+        <section class="archive-record">
+          <div class="archive-record__inner">
+
+            <div class="archive-record__heading-wrap">
+              <h2 class="archive-record__heading">Record</h2>
+            </div>
+
+            <dl class="archive-record__grid" id="record"></dl>
+
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+      <footer class="archive-footer">
+  <button class="archive-download" id="downloadBtn" type="button">
+    Download PDF
+  </button>
+
+  <div class="archive-signature-wrap">
+    <img
+      class="archive-signature"
+      id="signature"
+      src="assets/signature.png"
+      alt="GLAMOPH signature"
+    />
+  </div>
+</footer>
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const DEFAULT_ID = "GLA-AMFW-L-003";
+      const RECORDS_DIR = "records";
+
+      const els = {
+        verified: document.getElementById("verified"),
+        title: document.getElementById("title"),
+        artworkId: document.getElementById("artworkId"),
+        edition: document.getElementById("edition"),
+        image: document.getElementById("image"),
+        record: document.getElementById("record"),
+        downloadBtn: document.getElementById("downloadBtn"),
+        signature: document.getElementById("signature")
+      };
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function getIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const queryId = params.get("id");
+        if (queryId) return queryId.trim();
+
+        const segments = window.location.pathname
+          .split("/")
+          .filter(Boolean)
+          .map(decodeURIComponent);
+
+        if (segments.length) {
+          const last = segments[segments.length - 1];
+
+          if (
+            last &&
+            last !== "index.html" &&
+            last !== "archive" &&
+            !last.endsWith(".html")
+          ) {
+            return last.trim();
+          }
+        }
+
+        return DEFAULT_ID;
+      }
+
+      function resolveAssetPath(fileName, id, type = "record") {
+  if (!fileName) return "";
+
+  if (
+    /^(https?:)?\/\//i.test(fileName) ||
+    fileName.startsWith("/") ||
+    fileName.startsWith("./") ||
+    fileName.startsWith("../")
+  ) {
+    return fileName;
+  }
+
+  if (type === "image") {
+    return `/images/${encodeURIComponent(fileName)}`;
+  }
+
+  if (type === "signature") {
+    return `/assets/${encodeURIComponent(fileName)}`;
+  }
+
+  return `/records/${encodeURIComponent(id)}/${encodeURIComponent(fileName)}`;
+}
+
+      function buildRecordRows(data) {
+        const rows = [
+          { label: "Artist", value: data.artist || "" },
+          { label: "Medium", value: data.medium || "" },
+          { label: "Size", value: data.size || "" },
+          { label: "Frame", value: data.frame || "" },
+          { label: "Archive Date", value: data.archiveDate || "" }
+        ];
+
+        if (data.archiveUrl) {
+          rows.push({
+            label: "Archive URL",
+            value: data.archiveUrl,
+            isUrl: true
+          });
+        }
+
+        return rows.map((row) => {
+          if (row.isUrl) {
+            const safeUrl = escapeHtml(row.value);
+            return `
+              <div class="archive-record__row archive-record__row--url">
+                <dt>${escapeHtml(row.label)}</dt>
+                <dd><a href="https://${safeUrl}" target="_blank" rel="noopener noreferrer">${safeUrl}</a></dd>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="archive-record__row">
+              <dt>${escapeHtml(row.label)}</dt>
+              <dd>${escapeHtml(row.value)}</dd>
+            </div>
+          `;
+        }).join("");
+      }
+
+      function applyData(data, id) {
+        document.title = `GLAMOPH — ${data.title || id}`;
+
+        els.verified.textContent = data.verified || "Artwork Verified";
+        els.title.textContent = data.title || "Untitled";
+        els.artworkId.textContent = data.artworkId || id;
+        els.edition.textContent = data.edition || "";
+
+        const imageSrc = resolveAssetPath(data.image || "", id, "image");
+els.image.src = imageSrc;
+els.image.alt = data.title || id;
+
+if (data.signature) {
+  els.signature.src = resolveAssetPath(data.signature, id, "signature");
+}
+
+        els.record.innerHTML = buildRecordRows(data);
+
+        els.downloadBtn.addEventListener("click", () => {
+          document.documentElement.classList.add("is-printing");
+
+          const originalTitle = document.title;
+          document.title = `GLAMOPH-${data.artworkId || id}`;
+
+          setTimeout(() => {
+            window.print();
+
+            setTimeout(() => {
+              document.title = originalTitle;
+              document.documentElement.classList.remove("is-printing");
+            }, 300);
+          }, 80);
+        }, { once: true });
+      }
+
+      function showError(id) {
+        document.title = `GLAMOPH — Record Not Found`;
+        els.verified.textContent = "Record Unavailable";
+        els.title.textContent = "Record not found";
+        els.artworkId.textContent = id;
+        els.edition.textContent = "—";
+        els.image.removeAttribute("src");
+        els.image.alt = "";
+
+        els.record.innerHTML = `
+          <div class="archive-record__row">
+            <dt>Status</dt>
+            <dd>The requested record could not be loaded.</dd>
+          </div>
+          <div class="archive-record__row">
+            <dt>Expected File</dt>
+            <dd>${escapeHtml(`${RECORDS_DIR}/${id}/data.json`)}</dd>
+          </div>
+        `;
+      }
+
+      async function init() {
+        const id = getIdFromUrl();
+        const jsonPath = `${RECORDS_DIR}/${encodeURIComponent(id)}/data.json`;
+
+        try {
+          const response = await fetch(jsonPath, { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const data = await response.json();
+          applyData(data, id);
+        } catch (error) {
+          console.error("Archive record load error:", error);
+          showError(id);
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

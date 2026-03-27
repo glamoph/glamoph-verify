@@ -1,0 +1,11 @@
+{
+  "AZMU": {
+    "title": "Azure Muse",
+    "image": "AZMU.jpg",
+    "sizes": {
+      "S": { "edition_total": 50, "label": "16×20 in" },
+      "M": { "edition_total": 30, "label": "20×25 in" },
+      "L": { "edition_total": 10, "label": "24×30 in" }
+    }
+  }
+}
