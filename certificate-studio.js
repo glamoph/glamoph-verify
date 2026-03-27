@@ -6,13 +6,17 @@ const { generatePublicId } = require('./public-id');
 const app = express();
 const PORT = process.env.PORT || 8787;
 
-const ROOT_DIR = process.cwd();
+const ROOT_DIR = __dirname;
 const RECORDS_DIR = path.join(ROOT_DIR, 'records');
 const IMAGES_DIR = path.join(ROOT_DIR, 'images');
 const ASSETS_DIR = path.join(ROOT_DIR, 'assets');
 
 const VERIFY_HTML_PATH = path.join(ROOT_DIR, 'index.html');
 const ARCHIVE_CSS_PATH = path.join(ROOT_DIR, 'archive.css');
+
+const ARTWORKS_JSON = path.join(ROOT_DIR, 'artworks.json');
+const PENDING_ORDERS_JSON = path.join(ROOT_DIR, 'pending-orders.json');
+const RECORDS_SOURCE_JSON = path.join(ROOT_DIR, 'records-source.json');
 
 const ARTWORKS_JSON = path.join(ROOT_DIR, 'artworks.json');
 const PENDING_ORDERS_JSON = path.join(ROOT_DIR, 'pending-orders.json');
