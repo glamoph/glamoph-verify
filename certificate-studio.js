@@ -629,19 +629,10 @@ app.get('/:slug', (req, res, next) => {
     return next();
   }
 
-  const recordPath = path.join(RECORDS_DIR, slug, 'data.json');
-
-  console.log('[VERIFY] slug =', slug);
-  console.log('[VERIFY] RECORDS_DIR =', RECORDS_DIR);
-  console.log('[VERIFY] recordPath =', recordPath);
-  console.log('[VERIFY] exists =', fs.existsSync(recordPath));
+  const recordPath = path.join(process.cwd(), 'records', slug, 'data.json');
 
   if (!fs.existsSync(recordPath)) {
     return res.status(404).send('Record Not Found');
-  }
-
-  if (!fs.existsSync(VERIFY_HTML_PATH)) {
-    return res.status(500).send('index.html not found');
   }
 
   return res.sendFile(VERIFY_HTML_PATH);
